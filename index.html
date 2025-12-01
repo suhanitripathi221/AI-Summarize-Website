@@ -1,58 +1,152 @@
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website - Suhani Tripathi</title>
+    <title>SUHANI AI SUMMARIZER</title>
     <style>
         body {
-            background: linear-gradient(to right, #cce5ff, #e6f2ff);
-            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+            color: white;
             text-align: center;
-            margin-top: 120px;
+            overflow-x: hidden;
         }
 
+        /* ---------- INTRO PAGE ---------- */
+        #intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 45px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            animation: fadeOut 3s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        /* ---------- MAIN BOX ---------- */
         .box {
-            background: #fff;
-            display: inline-block;
-            padding: 30px 50px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-top: 120px;
+            background: #111;
+            width: 420px;
+            padding: 30px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 15px;
+            box-shadow: 0 0 25px cyan;
+            animation: fadeIn 2s ease forwards;
+            opacity: 0;
         }
 
-        h1 {
-            color: #007acc;
+        @keyframes fadeIn {
+            100% { opacity: 1; }
         }
 
-        p {
-            color: #444;
-            margin-bottom: 20px;
+        textarea {
+            width: 90%;
+            height: 130px;
+            border-radius: 10px;
+            padding: 12px;
+            border: none;
+            font-size: 15px;
+            outline: none;
         }
 
         button {
-            background-color: #007acc;
-            color: white;
-            border: none;
+            margin-top: 20px;
             padding: 12px 25px;
-            border-radius: 25px;
+            border-radius: 10px;
+            background: cyan;
+            font-size: 18px;
+            border: none;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
             transition: 0.3s;
         }
 
         button:hover {
-            background-color: #005999;
+            box-shadow: 0 0 20px cyan;
             transform: scale(1.05);
+        }
+
+        #output {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #00f7ff;
         }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h1>Welcome to My Website</h1>
-        <p><b>By:</b> Suhani Tripathi | <b>Bansal College of Engineering (AIML Branch)</b></p>
-        <p>This is my first website created using Visual Studio Code and Live Server.</p>
-        <a href="about.html"><button>About Me</button></a>
-    </div>
+<!-- ⭐ INTRO PAGE (Like Instagram by Meta) -->
+<div id="intro">
+    ✨ SUHANI • AI ✨
+</div>
+
+<h1 style="margin-top: 100px;">WELCOME BY SUHANI</h1>
+
+<div class="box">
+    <h2>AI TEXT SUMMARIZER</h2>
+
+    <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+
+    <button onclick="summarize()">Summarize</button>
+
+    <p id="output"></p>
+</div>
+
+<script>
+function summarize() {
+    let text = document.getElementById("inputText").value;
+    if(text.trim().length < 50){
+        document.getElementById("output").innerText = "⚠ Please enter at least 50 characters!";
+        return;
+    }
+
+    // Split sentences
+    let sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+
+    // Stopwords list
+    let stopwords = ["the","is","in","and","to","a","of","for","on","with","that","this","was","as","are","it","be"]; 
+
+    // Word frequency
+    let words = text.toLowerCase().replace(/[^a-zA-Z ]/g, "").split(" ");
+    let freq = {};
+
+    words.forEach(w => {
+        if(!stopwords.includes(w) && w.length > 2){
+            freq[w] = (freq[w] || 0) + 1;
+        }
+    });
+
+    // Score sentences
+    let scores = {};
+    sentences.forEach(s => {
+        let sWords = s.toLowerCase().split(" ");
+        let score = 0;
+        sWords.forEach(w => { if(freq[w]) score += freq[w]; });
+        scores[s] = score;
+    });
+
+    // Select top 30%
+    let sorted = sentences.sort((a,b) => scores[b] - scores[a]);
+    let summary = sorted.slice(0, Math.ceil(sentences.length * 0.3)).join(" ");
+
+    document.getElementById("output").innerText = "⭐ SUMMARY: " + summary;
+}
+</script>
 
 </body>
 </html>
